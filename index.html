@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>kg9955-arch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060b12;
+      --surface: #0a1220;
+      --surface2: #111e2e;
+      --surface3: #192840;
+      --border: rgba(255,255,255,0.06);
+      --border2: rgba(255,255,255,0.12);
+      --accent: #00c2a8;
+      --accent2: #4dffd9;
+      --accent-glow: rgba(0,194,168,0.25);
+      --gold: #ffd700;
+      --gold-dim: rgba(255,215,0,0.15);
+      --text: #e8f4f8;
+      --text-muted: #6090a8;
+      --text-dim: #3a5a70;
+      --card-w: 156px;
+      --nav-h: 68px;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 24px 64px rgba(0,0,0,0.7);
+    }
+    .theme-blue    { --accent: #2563eb; --accent2: #38bdf8; --accent-glow: rgba(37,99,235,0.25); }
+    .theme-violet  { --accent: #7c3aed; --accent2: #a78bfa; --accent-glow: rgba(124,58,237,0.25); }
+    .theme-emerald { --accent: #059669; --accent2: #34d399; --accent-glow: rgba(5,150,105,0.25); }
+    .theme-amber   { --accent: #d97706; --accent2: #fbbf24; --accent-glow: rgba(217,119,6,0.25); }
+    .theme-rose    { --accent: #e11d48; --accent2: #fb7185; --accent-glow: rgba(225,29,72,0.25); }
+    .theme-red     { --accent: #e50914; --accent2: #ff4757; --accent-glow: rgba(229,9,20,0.25); }
+    .theme-light {
+      --bg: #f0f4f8; --surface: #fff; --surface2: #e4ecf2; --surface3: #d8e4ec;
+      --border: rgba(0,0,0,0.07); --border2: rgba(0,0,0,0.14);
+      --text: #0a1220; --text-muted: #4a6a80; --text-dim: #9abccc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh; overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    .page { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, var(--accent-glow), transparent),
+        repeating-linear-gradient(0deg, var(--border) 0, var(--border) 1px, transparent 1px, transparent 60px),
+        repeating-linear-gradient(90deg, var(--border) 0, var(--border) 1px, transparent 1px, transparent 60px);
+      opacity: 0.6;
+    }
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 4px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      background: rgba(6,11,18,0.75);
+    }
+    .nav-logo {
+      font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent); }
+    .nav-logo span { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 7px; }
+    .theme-btn {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 2px solid var(--border2);
+      cursor: pointer; transition: transform 0.2s, border-color 0.2s;
+    }
+    .theme-btn:hover { transform: scale(1.15); border-color: var(--accent); }
+    .theme-btn.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    #t-default  { background: #00c2a8; }
+    #t-blue     { background: #2563eb; }
+    #t-violet   { background: #7c3aed; }
+    #t-emerald  { background: #059669; }
+    #t-amber    { background: #d97706; }
+    #t-rose     { background: #e11d48; }
+    #t-light    { background: linear-gradient(135deg,#fff 50%,#e4ecf2 50%); }
+
+    .hero {
+      position: relative; z-index: 1;
+      padding: 72px 0 56px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+    h1 {
+      font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+      font-weight: 900; line-height: 1.07; letter-spacing: -0.03em;
+    }
+    h1 .accent { color: var(--accent); }
+    .hero-sub { font-size: 1rem; color: var(--text-muted); max-width: 500px; line-height: 1.65; }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; transition: all 0.2s;
+      border: none; white-space: nowrap;
+    }
+    .btn-primary { background: var(--accent); color: #060b12; box-shadow: 0 0 24px var(--accent-glow); }
+    .btn-primary:hover { filter: brightness(1.12); transform: translateY(-2px); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+    section { position: relative; z-index: 1; margin-top: 52px; }
+    .section-label {
+      font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 18px 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); text-decoration: none; color: var(--text);
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--accent-glow); opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow); }
+    .card:hover::before { opacity: 1; }
+    .card-icon {
+      font-size: 1.4rem; min-width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface2); border-radius: var(--radius-sm);
+      border: 1px solid var(--border); position: relative; z-index: 1;
+    }
+    .card-body { position: relative; z-index: 1; flex: 1; }
+    .card-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .card-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+    .card-meta {
+      display: flex; gap: 10px; margin-top: 6px;
+      font-size: 0.72rem; color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .lang-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .lang-js   { background: #f1e05a; }
+    .lang-html { background: #e34c26; }
+    .card-arrow {
+      margin-left: auto; font-size: 1rem; color: var(--text-dim);
+      transition: color 0.2s, transform 0.2s;
+      position: relative; z-index: 1; align-self: center;
+    }
+    .card:hover .card-arrow { color: var(--accent); transform: translateX(4px); }
+    .card-wide { grid-column: 1 / -1; }
+    .card-featured {
+      border-color: var(--border2);
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    }
+    .card-featured .card-icon { background: var(--accent-glow); border-color: var(--accent); }
+
+    footer {
+      position: relative; z-index: 1;
+      margin-top: 72px; padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.8rem; color: var(--text-dim); flex-wrap: wrap; gap: 8px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero > * { animation: fadeUp 0.55s both; }
+    .hero > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero > *:nth-child(2) { animation-delay: 0.13s; }
+    .hero > *:nth-child(3) { animation-delay: 0.21s; }
+    .hero > *:nth-child(4) { animation-delay: 0.29s; }
+
+    @media (max-width: 540px) {
+      .links-grid { grid-template-columns: 1fr; }
+      nav { padding: 0; }
+    }
+  </style>
+</head>
+<body id="body">
+
+  <nav>
+    <a href="https://github.com/kg9955-arch" class="nav-logo" target="_blank">
+      <img src="https://avatars.githubusercontent.com/u/263203575?v=4" alt="avatar" />
+      kg9955<span>-arch</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn active" id="t-default"  onclick="setTheme('')"              title="Teal"></button>
+      <button class="theme-btn"        id="t-blue"     onclick="setTheme('theme-blue')"    title="Blue"></button>
+      <button class="theme-btn"        id="t-violet"   onclick="setTheme('theme-violet')"  title="Violet"></button>
+      <button class="theme-btn"        id="t-emerald"  onclick="setTheme('theme-emerald')" title="Emerald"></button>
+      <button class="theme-btn"        id="t-amber"    onclick="setTheme('theme-amber')"   title="Amber"></button>
+      <button class="theme-btn"        id="t-rose"     onclick="setTheme('theme-rose')"    title="Rose"></button>
+      <button class="theme-btn"        id="t-light"    onclick="setTheme('theme-light')"   title="Light"></button>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <div class="hero">
+      <span class="hero-tag">joined feb 2026</span>
+      <h1>Hey, I'm <span class="accent">kg9955-arch</span>.<br>I build for the web.</h1>
+      <p class="hero-sub">
+        Developer tinkering with fake operating systems, streaming interfaces,
+        and whatever else sounds interesting. Three repos in and just getting started.
+      </p>
+      <div class="hero-cta">
+        <a href="https://github.com/kg9955-arch" class="btn btn-primary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub Profile
+        </a>
+        <!-- ✏️ Replace with your email or other link -->
+        <a href="#links" class="btn btn-ghost">Find me →</a>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         PROJECTS — copy a .card block to add a new one
+    ═══════════════════════════════════════════════ -->
+    <section id="projects">
+      <p class="section-label">projects</p>
+      <div class="links-grid">
+
+        <a href="https://github.com/kg9955-arch/MockOS" class="card card-wide card-featured" target="_blank">
+          <span class="card-icon">🖥️</span>
+          <div class="card-body">
+            <div class="card-title">MockOS</div>
+            <div class="card-desc">A fake operating system built entirely in the browser — HTML, JS & CSS. Windows, a desktop, the works.</div>
+            <div class="card-meta"><span><span class="lang-dot lang-js"></span>JavaScript</span></div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a href="https://github.com/kg9955-arch/UnionFlix" class="card card-featured" target="_blank">
+          <span class="card-icon">🎬</span>
+          <div class="card-body">
+            <div class="card-title">UnionFlix</div>
+            <div class="card-desc">A streaming UI — browse, discover, watch. Union Flix.</div>
+            <div class="card-meta"><span><span class="lang-dot lang-js"></span>JavaScript</span></div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a href="https://github.com/kg9955-arch/Borealis" class="card" target="_blank">
+          <span class="card-icon">🌌</span>
+          <div class="card-body">
+            <div class="card-title">Borealis</div>
+            <div class="card-desc">A one-file rebrand of UnionFlix. Lean, self-contained, ready to ship.</div>
+            <div class="card-meta"><span><span class="lang-dot lang-html"></span>HTML</span></div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════
+         FIND ME — ✏️ replace # with your real links
+    ═══════════════════════════════════════════════ -->
+    <section id="links">
+      <p class="section-label">find me</p>
+      <div class="links-grid">
+
+        <a href="https://github.com/kg9955-arch" class="card" target="_blank">
+          <span class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          </span>
+          <div class="card-body">
+            <div class="card-title">GitHub</div>
+            <div class="card-desc">@kg9955-arch</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <!-- ✏️ Fill in or remove any of these -->
+        <a href="#" class="card" target="_blank">
+          <span class="card-icon">𝕏</span>
+          <div class="card-body">
+            <div class="card-title">Twitter / X</div>
+            <div class="card-desc">@yourusername</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a href="#" class="card" target="_blank">
+          <span class="card-icon">💬</span>
+          <div class="card-body">
+            <div class="card-title">Discord</div>
+            <div class="card-desc">your#tag</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+        <a href="mailto:you@example.com" class="card" target="_blank">
+          <span class="card-icon">✉</span>
+          <div class="card-body">
+            <div class="card-title">Email</div>
+            <div class="card-desc">you@example.com</div>
+          </div>
+          <span class="card-arrow">→</span>
+        </a>
+
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 kg9955-arch</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;">3 repos · vanilla html</span>
+    </footer>
+
+  </div>
+
+  <script>
+    const themes = ['','theme-blue','theme-violet','theme-emerald','theme-amber','theme-rose','theme-light'];
+    const btnIds = ['t-default','t-blue','t-violet','t-emerald','t-amber','t-rose','t-light'];
+    function setTheme(t) {
+      const body = document.getElementById('body');
+      themes.forEach(c => c && body.classList.remove(c));
+      if (t) body.classList.add(t);
+      btnIds.forEach((id,i) => document.getElementById(id).classList.toggle('active', themes[i] === t));
+      localStorage.setItem('theme', t);
+    }
+    const saved = localStorage.getItem('theme');
+    if (saved !== null) setTheme(saved);
+  </script>
+
+</body>
+</html>
